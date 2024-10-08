@@ -14,3 +14,9 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - all of the above happens in the constructor, so that it is executed when the class is instantiated
 
 ## Step 2: Interacting with DOM Elements
+
+- add input elements as properties to class to have access to input values from form
+- add event handler functions as class methods for button to get input submission when clicked
+- instead of using the .bind() method to set the 'this' context for the event handler, use a method decorator
+
+## Step 3: Fetching User Input
