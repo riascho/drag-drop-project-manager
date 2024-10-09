@@ -20,3 +20,6 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - instead of using the .bind() method to set the 'this' context for the event handler, use a method decorator
 
 ## Step 3: Fetching User Input
+
+- get input elements values
+- add appropriate validation to them using decorator functions
