@@ -22,4 +22,4 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 ## Step 3: Fetching User Input
 
 - get input elements values
-- add appropriate validation to them using decorator functions
+- add appropriate validation functionality to class

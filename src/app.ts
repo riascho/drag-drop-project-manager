@@ -14,55 +14,34 @@ function EventBinder(
   return newDescriptor;
 }
 
-// Validation Object
-interface Validator {
-  [classObjectConstructorName: string]: {
-    [propertyToValidate: string]: string[];
-  };
+interface Validatable {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
 }
 
-const validationChecks: Validator = {};
-/**
- * {
- *    ProjectInput:
- *        {
- *            titleInputElement: ['required', 'textCharacter']
-              descriptionInputElement: ['required', 'textCharacter']
-              peopleInputElement: ['required', 'positiveNumber']
- *        }
- * }
- * 
- */
-
-// Validation Decorator
-function IsRequired(target: any, propertyName: string) {
-  validationChecks[target.constructor.name] = { propertyName: [] };
-}
-
-function IsPositiveNumber(target: any, propertyName: string) {}
-
-function IsText(target: any, propertyName: string) {}
-
-function validateClassObject(obj: any) {
-  const validationCheckPoint = validationChecks[obj.constructor.name];
-  let isValid = true;
-  if (!validationCheckPoint) {
-    // if there is no validation check for the class object, return true by default
-    return isValid;
-  } // else we will loop through each of the properties that have been registered for validation
-  for (const prop in validationChecks) {
-    for (const check of validationChecks[prop]) {
-      switch (check) {
-        case "required": // TODO: these cases should be spec'ed in a single source and not hardcoded!
-          isValid = !!obj[prop];
-          break;
-        case "positiveNumber":
-          isValid = obj[prop] > 0;
-          break;
-        // case "textCharacter":
-        //   isValid = String.isChar(obj[prop]);
-      }
-    }
+function validate(input: Validatable) {
+  // contains all validation checks
+  let isValid = true; // will be set to false if any validation check fails
+  if (input.required) {
+    // if required is set as validation check -> check if value is set
+    isValid = isValid && !!input.value; // if it's 0 or empty string will be falsy, !! double bang converts it into a false value
+  }
+  if (input.minLength != null && typeof input.value === "string") {
+    // if minLength is set as a validation check (only necessary for string inputs)
+    isValid = isValid && input.value.length > input.minLength;
+  }
+  if (input.maxLength != null && typeof input.value === "string") {
+    isValid = isValid && input.value.length < input.maxLength;
+  }
+  if (input.min != null && typeof input.value === "number") {
+    isValid = isValid && input.value >= input.min;
+  }
+  if (input.max != null && typeof input.value === "number") {
+    isValid = isValid && input.value < input.max;
   }
   return isValid;
 }
@@ -124,16 +103,47 @@ class ProjectInput {
   private getUserInput(): [string, string, number] | void {
     const titleInput = this.titleInputElement.value;
     const descriptionInput = this.descriptionInputElement.value;
-    const peopleInput = this.peopleInputElement.value;
+    const peopleInput = parseInt(this.peopleInputElement.value);
+
     // vanilla approach - should be done with a validation decorator
+    // if (
+    //   titleInput.trim().length === 0 ||
+    //   descriptionInput.trim().length === 0 ||
+    //   peopleInput.trim().length === 0
+    // ) {
+    //   alert("Please enter a value!");
+    // } else {
+    //   return [titleInput, descriptionInput, parseInt(peopleInput)];
+    // }
+
+    const validTitle: Validatable = {
+      value: titleInput,
+      required: true,
+      minLength: 10,
+    };
+    const validDescription: Validatable = {
+      value: descriptionInput,
+      required: true,
+      minLength: 5,
+      maxLength: 150,
+    };
+    const validPeople: Validatable = {
+      value: peopleInput,
+      required: true,
+      min: 1,
+      max: 5,
+    };
+
     if (
-      titleInput.trim().length === 0 ||
-      descriptionInput.trim().length === 0 ||
-      peopleInput.trim().length === 0
+      // either of them is false
+      !validate(validTitle) ||
+      !validate(validDescription) ||
+      !validate(validPeople)
     ) {
-      alert("Please enter a value!");
+      alert("Invalid Input! Please try again!");
+      return;
     } else {
-      return [titleInput, descriptionInput, parseInt(peopleInput)];
+      return [titleInput, descriptionInput, peopleInput];
     }
   }
 
