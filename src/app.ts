@@ -58,6 +58,7 @@ function validate(input: Validatable) {
 }
 
 // Classes
+
 class ProjectInput {
   templateElement: HTMLTemplateElement; // template tag element with id 'project-input'
   activeDiv: HTMLDivElement; // div element at bottom that will render our active elements
@@ -72,7 +73,7 @@ class ProjectInput {
     if (templateElement) {
       this.templateElement = templateElement as HTMLTemplateElement;
     } else {
-      throw new Error("HTML id project-input is missing!");
+      throw new Error("HTML id 'project-input' is missing!");
     }
 
     // implying that "app" id will always exist
@@ -109,6 +110,7 @@ class ProjectInput {
   private attachActiveElements() {
     // adds the grabbed template element to the active div element
     this.activeDiv.insertAdjacentElement("afterbegin", this.formElement);
+    // will add project-input form just inside the targetElement, before its first child.
   }
 
   private getUserInput(): [string, string, number] | void {
@@ -194,7 +196,49 @@ class ProjectInput {
   }
 }
 
+class ProjectList {
+  templateElement: HTMLTemplateElement;
+  activeDiv: HTMLDivElement;
+  element: HTMLElement;
+
+  // constructor needs parameter to define which type the project will be that gets added to the list
+  // union type of literals because we will only have two categories
+  constructor(private projectType: "active" | "finished") {
+    const templateElement = document.getElementById("project-list");
+    if (templateElement) {
+      this.templateElement = templateElement as HTMLTemplateElement;
+    } else {
+      throw new Error("HTML id 'project-list' is missing!");
+    }
+    this.activeDiv = document.getElementById("app")! as HTMLDivElement;
+    const originalTemplateElement = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.element = originalTemplateElement.firstElementChild as HTMLElement; // stores the first element of the template element, which is a section element
+    this.element.id = `${this.projectType}-projects`; // overwrites the section element id dynamically
+
+    this.attachToActiveDiv();
+    this.renderContent();
+  }
+
+  private attachToActiveDiv() {
+    this.activeDiv.insertAdjacentElement("beforeend", this.element);
+    // will add project-list just inside the targetElement, after its last child.
+  }
+
+  // to fill the template element tags in the active element
+  private renderContent() {
+    this.element.querySelector(
+      "h2"
+    )!.textContent = `${this.projectType.toUpperCase()} PROJECTS`;
+    this.element.querySelector("ul")!.id = `${this.projectType}-projects-list`;
+  }
+}
+
 // Class Objects (Instances)
 
 // when class is instantiated the rendering is executed and will show up in browser
-const start = new ProjectInput();
+const projectInput = new ProjectInput();
+const activeProjectList = new ProjectList("active");
+const finishedProjectList = new ProjectList("finished");

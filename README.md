@@ -8,7 +8,7 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 
 ## Step 1: DOM Element Selection & OOP Rendering
 
-- create class with constructors properties that contain DOM elements we want to address
+- create class `project-input` with constructors properties that contain DOM elements we want to address
 - import template elements content
 - attach grabbed template content to active div for rendering
 - all of the above happens in the constructor, so that it is executed when the class is instantiated
@@ -24,4 +24,10 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - get input elements values
 - add appropriate validation functionality to class
 
-## Setp 4: Rendering Project Lists
+## Step 4: Rendering Project Lists
+
+- implement a new class for `project-list` element
+- constructor needs parameter -> will need two different types (`active` | `finished`) that will be instantiated
+- same as with `project-input` we copy the HTML template element
+- make some changes to the copied element (have dynamic title according to `project type`)
+- attach the customized element to the active div
