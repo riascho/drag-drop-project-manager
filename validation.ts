@@ -1,4 +1,4 @@
-// first attempt (before solution)
+// first attempt (before solution) -> TODO: implement with decorators later at some point
 
 interface Validator {
   [classObjectConstructorName: string]: {
@@ -27,6 +27,9 @@ function IsPositiveNumber(target: any, propertyName: string) {}
 function IsText(target: any, propertyName: string) {}
 
 // Validation Function -> run for entire class for properties that have a validation decorator
+
+/** */
+
 function validateAll(): boolean {
   const validationCheckPoint = validationChecks[obj.constructor.name];
   let isValid = true;

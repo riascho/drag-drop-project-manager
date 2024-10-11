@@ -23,3 +23,5 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 
 - get input elements values
 - add appropriate validation functionality to class
+
+## Setp 4: Rendering Project Lists
