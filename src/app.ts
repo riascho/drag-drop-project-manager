@@ -1,5 +1,35 @@
-// TODOs:
-// Why are the projects not rendered correctly? (Functions are not stored / called correctly from the listener collection?)
+// TYPES
+
+enum ProjectStatus {
+  Active, // 0
+  Finished, // 1
+}
+
+// using a class type for the project items so we can instantiate it
+class Project {
+  constructor(
+    public id: number,
+    public title: string,
+    public description: string,
+    public people: number,
+    public status: ProjectStatus
+  ) {}
+}
+
+// define the type of functions that are passed to the listeners collection to be called by the state manager in an event (dynamics)
+type ListenerFunctionWithoutArguments = () => void;
+// type ListenerFunctionWithArguments = (items: Project[]) => void; // when we need to be more restrictive to make sure these functions always contain parameters
+
+interface Validatable {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+// METHODS
 
 // Autobind Decorator
 function Autobind(
@@ -15,15 +45,6 @@ function Autobind(
     },
   };
   return newDescriptor;
-}
-
-interface Validatable {
-  value: string | number;
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  min?: number;
-  max?: number;
 }
 
 function validate(input: Validatable) {
@@ -60,7 +81,7 @@ function validate(input: Validatable) {
   return isValid; // TODO: make this nicer, so an alert is shown for the specific validation failure and
 }
 
-// Classes
+// CLASSES
 
 class ProjectStateManagement {
   // Singleton -> this class can only be instantiated once (as global object to be used throughout the app)
@@ -75,7 +96,7 @@ class ProjectStateManagement {
   }
 
   // whenever form is submitted, the project gets added to here:
-  private projects: any[] = [];
+  private projects: Project[] = [];
 
   // getter method to return current project list
   get storedProjects() {
@@ -84,12 +105,13 @@ class ProjectStateManagement {
 
   // public method, can be called from outside of class to add new projects
   addProject(title: string, description: string, people: number) {
-    const newProject = {
-      id: 1, // use some counter to keep incrementing
-      title: title,
-      description: description,
-      people: people,
-    };
+    const newProject = new Project(
+      1, // TODO: add function to increment id automatically
+      title,
+      description,
+      people,
+      ProjectStatus.Active // adds "active" status by default
+    );
     this.projects.push(newProject);
     // when project is added invoke() all functions in listener collection again
     for (const listener of this.listeners) {
@@ -98,16 +120,15 @@ class ProjectStateManagement {
   }
 
   // collection of functions from other classes that need to be shared across
-  private listeners: any[] = [];
+  private listeners: ListenerFunctionWithoutArguments[] = [];
+  // same as: private listeners: (() => void)[] = [];
   // public method, that lets other classes add their functions to the listeners collection
-  addListener(listenerFunction: Function) {
+  addListener(listenerFunction: ListenerFunctionWithoutArguments) {
     this.listeners.push(() => {
       listenerFunction(); // push the actual function so it can be invoked when iterated (need to do that using a callback) otherwise you are just pushing the function reference
     });
   }
 }
-// this is a global instance (singleton) that can be used to interact between classes
-const stateManager = ProjectStateManagement.setInstance();
 
 class ProjectInput {
   templateElement: HTMLTemplateElement; // template tag element with id 'project-input'
@@ -250,7 +271,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   activeDiv: HTMLDivElement;
   element: HTMLElement;
-  projects: any[];
+  projects: Project[];
 
   // constructor needs parameter to define which type the project will be that gets added to the list
   // union type of literals because we will only have two categories
@@ -309,7 +330,10 @@ class ProjectList {
   }
 }
 
-// Class Objects (Instances)
+// CLASS INSTANCES
+
+// this is a global instance (singleton) that can be used to interact between classes
+const stateManager = ProjectStateManagement.setInstance();
 
 // when class is instantiated the rendering is executed and will show up in browser
 const projectInput = new ProjectInput();
