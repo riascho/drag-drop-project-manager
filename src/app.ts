@@ -1,4 +1,4 @@
-// TODO: don't use enums?
+// TODO: make project id's incrementable (and not static)
 
 // TYPES
 
@@ -32,6 +32,20 @@ interface Validatable {
   maxLength?: number;
   min?: number;
   max?: number;
+}
+
+// using interfaces when we want to add specific types and structures to certain classes or objects to implement certain methods
+interface Draggable {
+  // e.g. ProjectItem class
+  dragStartHandler(event: DragEvent): void; // when it becomes draggable
+  dragEndHandler(event: DragEvent): void; // when it stops to be draggable
+}
+
+interface DragTarget {
+  // e.g. ProjectList class
+  dragOverHandler(event: DragEvent): void; // permit the drop
+  dropHandler(event: DragEvent): void; // handle the drop
+  dragLeaveHandler(event: DragEvent): void; // visual feedback after drop or abort
 }
 
 // METHODS
@@ -98,6 +112,12 @@ class StateManagement {
       listenerFunction(); // push the actual function so it can be invoked when iterated (need to do that using a callback) otherwise you are just pushing the function reference
     });
   }
+
+  protected updateListeners() {
+    for (const listener of this.listeners) {
+      listener();
+    }
+  }
 }
 
 class ProjectStateManagement extends StateManagement {
@@ -132,9 +152,17 @@ class ProjectStateManagement extends StateManagement {
       "active" // adds "active" status by default
     );
     this.projects.push(newProject);
-    // when project is added invoke() all functions in listener collection again
-    for (const listener of this.listeners) {
-      listener();
+    // runs the global listeners to trigger render change
+    this.updateListeners();
+  }
+
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const foundProject = this.projects.find(
+      (project) => project.id.toString() === projectId
+    );
+    if (foundProject && foundProject.status !== newStatus) {
+      foundProject.status = newStatus;
+      this.updateListeners();
     }
   }
 }
@@ -296,7 +324,10 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
   }
 }
 
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList
+  extends Component<HTMLDivElement, HTMLElement>
+  implements DragTarget
+{
   projects: Project[];
 
   // constructor needs parameter to define which type the project will be that gets added to the list
@@ -316,6 +347,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   activate() {
     // registers the renderProjects function to the state manager, so it can be called from elsewhere
     stateManager.addListener(this.renderProjects);
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
+    this.activeElement.addEventListener("dragover", this.dragOverHandler);
+    this.activeElement.addEventListener("drop", this.dropHandler);
+    this.activeElement.addEventListener("dragleave", this.dragLeaveHandler);
   }
 
   // to fill the template element tags in the active element
@@ -346,9 +381,34 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
       }
     }
   }
+
+  @Autobind
+  dragOverHandler(event: DragEvent): void {
+    if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+      event.preventDefault();
+      const listElement = this.activeElement.querySelector("ul")!;
+      listElement.classList.add("droppable");
+    }
+  }
+
+  @Autobind
+  dropHandler(event: DragEvent): void {
+    const projectId = event.dataTransfer!.getData("text/plain");
+    stateManager.moveProject(projectId, this.projectType);
+  }
+
+  @Autobind
+  dragLeaveHandler(_event: DragEvent): void {
+    const listElement = this.activeElement.querySelector("ul")!;
+    listElement.classList.remove("droppable");
+  }
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLLIElement>
+  implements Draggable
+{
+  // this enforces that we implement the Draggable methods!
   // T corresponds to the element where our project items will be placed in
   // U is the item we want to place in T
 
@@ -363,7 +423,10 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.renderContent();
   }
 
-  protected activate(): void {}
+  protected activate(): void {
+    this.activeElement.addEventListener("dragstart", this.dragStartHandler);
+    this.activeElement.addEventListener("dragend", this.dragEndHandler);
+  }
 
   protected renderContent(): void {
     this.activeElement.querySelector("h2")!.textContent = this.project.title;
@@ -373,6 +436,16 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
         : `${this.project.people} Person`;
     this.activeElement.querySelector("p")!.textContent =
       this.project.description;
+  }
+
+  @Autobind
+  dragStartHandler(event: DragEvent): void {
+    event.dataTransfer!.setData("text/plain", this.project.id.toString());
+    event.dataTransfer!.effectAllowed = "move";
+  }
+
+  dragEndHandler(_event: DragEvent): void {
+    console.log("Drag ended");
   }
 }
 

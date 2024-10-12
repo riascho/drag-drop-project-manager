@@ -64,3 +64,14 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - add new class for individual project items that also inherits from base class
 - renders project values as HTML content to the target element in active container
 - make `renderProjects()` of the `ProjectList` class instantiate the `ProjectItem` class for each new project that is added (added dynamics!)
+
+## Step 9: Implement Drag & Drop
+
+- using interfaces to define the necessary event handlers to be enforced on the respective classes
+- implement drag methods
+- make sure the HTML element is draggable (attribute)
+
+## Step 10: Update Listeners
+
+- in the State Management class implement new function that updatesListeners
+- centralize this functionality so that whenever any other class triggers a change on the HTML elements (e.g. adding a project, or drag-and-dropping it) the listener functions fire and refresh the rendering
