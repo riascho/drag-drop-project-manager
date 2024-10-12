@@ -46,3 +46,9 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - part of that context is that the projects are loaded in within that scope via calling the project getter function of the `state manager` to get all currently saved projects
 - the `state manager` manages the `addProject()` function, that is triggered by form submission (and after input validation) from the `project-input` class
 - this `addProject()` also invokes all functions in the global `listeners` collection, which will then call the `renderProjects()` function again of the `project-list` class to re-render the updated projects lists
+
+## Step 6: Filtering Project List
+
+- using a union type to define categories for projects
+- the `renderProjects()` function checks for the instance's project type
+- if it matches with the status type of the project from the global project's list (from store manager) then it will add the item to it's container

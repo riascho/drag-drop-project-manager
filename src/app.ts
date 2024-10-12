@@ -1,9 +1,14 @@
+// TODO: don't use enums?
+
 // TYPES
 
-enum ProjectStatus {
-  Active, // 0
-  Finished, // 1
-}
+// decided not use enum because I have no functionality for the 0 or 1
+// enum ProjectStatus {
+//   Active, // 0
+//   Finished, // 1
+// }
+
+type ProjectStatus = "active" | "finished";
 
 // using a class type for the project items so we can instantiate it
 class Project {
@@ -110,7 +115,7 @@ class ProjectStateManagement {
       title,
       description,
       people,
-      ProjectStatus.Active // adds "active" status by default
+      "active" // adds "active" status by default
     );
     this.projects.push(newProject);
     // when project is added invoke() all functions in listener collection again
@@ -275,7 +280,7 @@ class ProjectList {
 
   // constructor needs parameter to define which type the project will be that gets added to the list
   // union type of literals because we will only have two categories
-  constructor(private projectType: "active" | "finished") {
+  constructor(private projectType: ProjectStatus) {
     const templateElement = document.getElementById("project-list");
     if (templateElement) {
       this.templateElement = templateElement as HTMLTemplateElement;
@@ -321,11 +326,16 @@ class ProjectList {
     const listItemElement = document.getElementById(
       `${this.projectType}-projects-list`
     )! as HTMLUListElement;
+    // clear the list
+    // TODO: for performance it would be better to not fetch the whole list every time, but to only really append new items
+    listItemElement.textContent = "";
     // looping through stored projects array (from state manager)
     for (const projectItem of this.projects) {
-      const newListItem = document.createElement("li");
-      newListItem.textContent = projectItem.title;
-      listItemElement.appendChild(newListItem);
+      if (projectItem.status === this.projectType) {
+        const newListItem = document.createElement("li");
+        newListItem.textContent = projectItem.title;
+        listItemElement.appendChild(newListItem);
+      }
     }
   }
 }
