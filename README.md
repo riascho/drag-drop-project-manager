@@ -52,3 +52,9 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - using a union type to define categories for projects
 - the `renderProjects()` function checks for the instance's project type
 - if it matches with the status type of the project from the global project's list (from store manager) then it will add the item to it's container
+
+## Step 7: Centralizing some functionalities using a Base Component Class
+
+- add base component class that centralizes HTML rendering and attaching to active container
+- add base state management class that centralizes event subscription
+- use generic types in base class that can be refined in subclasses
