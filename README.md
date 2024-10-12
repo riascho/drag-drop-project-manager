@@ -31,3 +31,18 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - same as with `project-input` we copy the HTML template element
 - make some changes to the copied element (have dynamic title according to `project type`)
 - attach the customized element to the active div
+
+## Step 5: Populating Project List
+
+- get form input data to create a new project object
+- this object will be put in the `project-list` active div
+- using a state management class for this approach
+- implement `Singleton` approach to have one global instance of this state management class (`state manager`)
+- this instance can then be used to dynamically add the form inputs as new projects
+- the `state manager` stores a global array of the projects added as well as an array of functions (`listeners`) to be called globally
+- the `state manager` also has a getter to return all currently saved projects
+- the `project-list` class adds the `renderProjects()` function to that global collection of the `state manager` instance (in the constructor!)
+- the `renderProjects()` function is maintained by the `project-list` class but with help of the `@Autobind` decorator the context can be passed on
+- part of that context is that the projects are loaded in within that scope via calling the project getter function of the `state manager` to get all currently saved projects
+- the `state manager` manages the `addProject()` function, that is triggered by form submission (and after input validation) from the `project-input` class
+- this `addProject()` also invokes all functions in the global `listeners` collection, which will then call the `renderProjects()` function again of the `project-list` class to re-render the updated projects lists

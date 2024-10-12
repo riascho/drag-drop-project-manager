@@ -1,5 +1,8 @@
+// TODOs:
+// Why are the projects not rendered correctly? (Functions are not stored / called correctly from the listener collection?)
+
 // Autobind Decorator
-function EventBinder(
+function Autobind(
   _target: any, // 'prototype of class (ProjectInput)'
   _methodName: string, // 'activateSubmitButton'
   descriptor: PropertyDescriptor
@@ -58,6 +61,53 @@ function validate(input: Validatable) {
 }
 
 // Classes
+
+class ProjectStateManagement {
+  // Singleton -> this class can only be instantiated once (as global object to be used throughout the app)
+  private constructor() {}
+  private static instance: ProjectStateManagement;
+  static setInstance() {
+    if (ProjectStateManagement.instance) {
+      return this.instance;
+    }
+    this.instance = new ProjectStateManagement();
+    return this.instance;
+  }
+
+  // whenever form is submitted, the project gets added to here:
+  private projects: any[] = [];
+
+  // getter method to return current project list
+  get storedProjects() {
+    return [...this.projects];
+  }
+
+  // public method, can be called from outside of class to add new projects
+  addProject(title: string, description: string, people: number) {
+    const newProject = {
+      id: 1, // use some counter to keep incrementing
+      title: title,
+      description: description,
+      people: people,
+    };
+    this.projects.push(newProject);
+    // when project is added invoke() all functions in listener collection again
+    for (const listener of this.listeners) {
+      listener();
+    }
+  }
+
+  // collection of functions from other classes that need to be shared across
+  private listeners: any[] = [];
+  // public method, that lets other classes add their functions to the listeners collection
+  addListener(listenerFunction: Function) {
+    this.listeners.push(() => {
+      listenerFunction(); // push the actual function so it can be invoked when iterated (need to do that using a callback) otherwise you are just pushing the function reference
+    });
+  }
+}
+// this is a global instance (singleton) that can be used to interact between classes
+const stateManager = ProjectStateManagement.setInstance();
 
 class ProjectInput {
   templateElement: HTMLTemplateElement; // template tag element with id 'project-input'
@@ -156,12 +206,13 @@ class ProjectInput {
       alert("Invalid Input! Please try again!");
       return;
     } else {
+      this.clearFormFields();
       return [titleInput, descriptionInput, peopleInput];
     }
   }
 
   // will trigger on when form is submitted
-  @EventBinder
+  @Autobind
   private submitHandler(event: Event) {
     event.preventDefault(); // remove default behavior (send HTTP request upon submission)
     // what to do when form is submitted
@@ -170,11 +221,10 @@ class ProjectInput {
       // .isArray method to check if it's a tuple (which is an array essentially)
       // if true, we got our valid input tuple
       const [title, description, people] = userInput;
-      console.log(title);
-      console.log(description);
-      console.log(people);
+      stateManager.addProject(title, description, people);
+      console.log("Project Collection:");
+      console.log(stateManager.storedProjects);
     }
-    this.clearFormFields();
   }
 
   private clearFormFields() {
@@ -192,7 +242,7 @@ class ProjectInput {
     this.formElement.addEventListener("submit", this.submitHandler);
     // 'this' context within a callback will be bound to the target of the event ! (not the class)
     // this.formElement.addEventListener("submit", this.submitHandler.bind(this)); // binding 'this' context to the class
-    // however, this can be achieved with a method decorator (EventBinder)
+    // however, this can be achieved with a method decorator (Autobind)
   }
 }
 
@@ -200,6 +250,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   activeDiv: HTMLDivElement;
   element: HTMLElement;
+  projects: any[];
 
   // constructor needs parameter to define which type the project will be that gets added to the list
   // union type of literals because we will only have two categories
@@ -218,8 +269,15 @@ class ProjectList {
     this.element = originalTemplateElement.firstElementChild as HTMLElement; // stores the first element of the template element, which is a section element
     this.element.id = `${this.projectType}-projects`; // overwrites the section element id dynamically
 
+    // this.projects = stateManager.storedProjects; // gets current project collection from state manager
+    this.projects = [];
+    // registers the renderProjects function to the state manager, so it can be called from elsewhere
+    stateManager.addListener(this.renderProjects);
+
     this.attachToActiveDiv();
     this.renderContent();
+    this.renderProjects(); // initial setup from database
+    console.log(`${this.projectType} projects rendered from ProjectList Class`);
   }
 
   private attachToActiveDiv() {
@@ -233,6 +291,21 @@ class ProjectList {
       "h2"
     )!.textContent = `${this.projectType.toUpperCase()} PROJECTS`;
     this.element.querySelector("ul")!.id = `${this.projectType}-projects-list`;
+  }
+
+  @Autobind // The @Autobind decorator is applied to ensure it retains the correct '.this' context when called (from the state manager instance for example)
+  private renderProjects() {
+    this.projects = stateManager.storedProjects; // gets current project collection from state manager
+    // get the element the project list item will be attached to
+    const listItemElement = document.getElementById(
+      `${this.projectType}-projects-list`
+    )! as HTMLUListElement;
+    // looping through stored projects array (from state manager)
+    for (const projectItem of this.projects) {
+      const newListItem = document.createElement("li");
+      newListItem.textContent = projectItem.title;
+      listItemElement.appendChild(newListItem);
+    }
   }
 }
 
