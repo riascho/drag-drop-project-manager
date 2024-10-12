@@ -339,11 +339,40 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     // looping through stored projects array (from state manager)
     for (const projectItem of this.projects) {
       if (projectItem.status === this.projectType) {
-        const newListItem = document.createElement("li");
-        newListItem.textContent = projectItem.title;
-        listItemElement.appendChild(newListItem);
+        new ProjectItem(
+          this.activeElement.querySelector("ul")!.id,
+          projectItem
+        );
       }
     }
+  }
+}
+
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+  // T corresponds to the element where our project items will be placed in
+  // U is the item we want to place in T
+
+  private project: Project;
+
+  constructor(hostId: string, project: Project) {
+    // add project status here
+    super("single-project", hostId, "afterbegin", project.id.toString());
+    this.project = project;
+    console.log(hostId);
+    this.activate();
+    this.renderContent();
+  }
+
+  protected activate(): void {}
+
+  protected renderContent(): void {
+    this.activeElement.querySelector("h2")!.textContent = this.project.title;
+    this.activeElement.querySelector("h3")!.textContent =
+      this.project.people > 1
+        ? `${this.project.people} People`
+        : `${this.project.people} Person`;
+    this.activeElement.querySelector("p")!.textContent =
+      this.project.description;
   }
 }
 

@@ -58,3 +58,9 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 - add base component class that centralizes HTML rendering and attaching to active container
 - add base state management class that centralizes event subscription
 - use generic types in base class that can be refined in subclasses
+
+## Step 8: Rendering individual Project Items
+
+- add new class for individual project items that also inherits from base class
+- renders project values as HTML content to the target element in active container
+- make `renderProjects()` of the `ProjectList` class instantiate the `ProjectItem` class for each new project that is added (added dynamics!)
