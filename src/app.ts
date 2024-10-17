@@ -142,10 +142,12 @@ class ProjectStateManagement extends StateManagement {
     return [...this.projects];
   }
 
+  private projectCounter: number = 1;
+
   // public method, can be called from outside of class to add new projects
   addProject(title: string, description: string, people: number) {
     const newProject = new Project(
-      1, // TODO: add function to increment id automatically
+      this.projectCounter,
       title,
       description,
       people,
@@ -154,6 +156,8 @@ class ProjectStateManagement extends StateManagement {
     this.projects.push(newProject);
     // runs the global listeners to trigger render change
     this.updateListeners();
+    // increments project counter for new id
+    this.projectCounter++;
   }
 
   moveProject(projectId: string, newStatus: ProjectStatus) {
@@ -420,7 +424,6 @@ class ProjectItem
     // add project status here
     super("single-project", hostId, "afterbegin", project.id.toString());
     this.project = project;
-    console.log(hostId);
     this.activate();
     this.renderContent();
   }
