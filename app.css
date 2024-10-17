@@ -59,6 +59,15 @@ button:active {
 .projects {
   margin: 1rem;
   border: 1px solid #ff0062;
+  transition: all 0.3s ease-in-out;
+}
+
+.projects .collapsed {
+  min-height: 80px;
+}
+
+.projects .expanded {
+  min-height: 200px
 }
 
 .projects header {

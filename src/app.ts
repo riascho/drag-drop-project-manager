@@ -387,7 +387,8 @@ class ProjectList
     if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
       event.preventDefault();
       const listElement = this.activeElement.querySelector("ul")!;
-      listElement.classList.add("droppable");
+      listElement.classList.add("droppable", "expanded");
+      listElement.classList.replace("collapsed", "expanded");
     }
   }
 
@@ -400,7 +401,8 @@ class ProjectList
   @Autobind
   dragLeaveHandler(_event: DragEvent): void {
     const listElement = this.activeElement.querySelector("ul")!;
-    listElement.classList.remove("droppable");
+    listElement.classList.remove("droppable", "collapsed");
+    listElement.classList.replace("expanded", "collapsed");
   }
 }
 
