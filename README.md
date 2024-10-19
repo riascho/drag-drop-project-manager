@@ -89,6 +89,7 @@ Namespaces in TypeScript are a way to organize code within a single global scope
 
 - Suitable for organizing code within a single file or project without external dependencies
 - They are less common in modern TypeScript projects.
+- Better suitable for older browsers
 
 ```typescript
 namespace MyNamespace {
@@ -108,6 +109,7 @@ ES modules are the standard for modularization in modern JavaScript and TypeScri
 
 - Preferred for larger projects and when working with external libraries
 - They align with the ECMAScript standard and are supported by modern JavaScript environments.
+- Older Browsers cannot support ES Modules
 
 ```typescript
 // myModule.ts
