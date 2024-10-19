@@ -1,8 +1,11 @@
 # Drag & Drop Project Manager
 
-This is TypeScript project of an app that let's you manage projects by drag-and-drop.
+This is TypeScript project of an app that let's you manage projects by drag-and-drop. From the course [Boost your JavaScript projects with TypeScript](https://www.udemy.com/course/understanding-typescript/)
 
-From the course [Boost your JavaScript projects with TypeScript](https://www.udemy.com/course/understanding-typescript/)
+There are 2 additional branches to demonstrate the concept of modularization:
+
+- using [Namespaces](https://github.com/riascho/drag-drop-project-manager/tree/namespaces)
+- using [ES Modules](https://github.com/riascho/drag-drop-project-manager/tree/es-modules)
 
 ---
 
@@ -99,7 +102,7 @@ namespace MyNamespace {
 }
 ```
 
-## [ES Modules]()
+## [ES6 Modules](https://github.com/riascho/drag-drop-project-manager/tree/es-modules)
 
 ES modules are the standard for modularization in modern JavaScript and TypeScript. They allow you to split your code into separate files and import/export functionalities as needed. This approach promotes better code organization, reusability, and maintainability.
 
