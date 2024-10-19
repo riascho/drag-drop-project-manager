@@ -75,3 +75,54 @@ From the course [Boost your JavaScript projects with TypeScript](https://www.ude
 
 - in the State Management class implement new function that updatesListeners
 - centralize this functionality so that whenever any other class triggers a change on the HTML elements (e.g. adding a project, or drag-and-dropping it) the listener functions fire and refresh the rendering
+
+# Modularization
+
+Modularization in TypeScript can be achieved using either namespaces or ES modules, each offering distinct advantages and use cases.
+
+## [`Namespaces`](https://github.com/riascho/drag-drop-project-manager/tree/namespaces)
+
+Namespaces in TypeScript are a way to organize code within a single global scope. They are useful for grouping related functionalities and avoiding name collisions. Namespaces are declared using the namespace keyword and can contain classes, interfaces, functions, and variables.
+
+- Suitable for organizing code within a single file or project without external dependencies
+- They are less common in modern TypeScript projects.
+
+```typescript
+namespace MyNamespace {
+  export class MyClass {
+    // Class implementation
+  }
+
+  export function myFunction() {
+    // Function implementation
+  }
+}
+```
+
+## [ES Modules]()
+
+ES modules are the standard for modularization in modern JavaScript and TypeScript. They allow you to split your code into separate files and import/export functionalities as needed. This approach promotes better code organization, reusability, and maintainability.
+
+- Preferred for larger projects and when working with external libraries
+- They align with the ECMAScript standard and are supported by modern JavaScript environments.
+
+```typescript
+// myModule.ts
+export class MyClass {
+  // Class implementation
+}
+
+export function myFunction() {
+  // Function implementation
+}
+
+// anotherFile.ts
+import { MyClass, myFunction } from "./myModule";
+
+const instance = new MyClass();
+myFunction();
+```
+
+---
+
+Choosing between namespaces and ES modules depends on the project requirements and the development environment. For most modern TypeScript projects, ES modules are the recommended approach.
