@@ -99,7 +99,7 @@ namespace MyNamespace {
 }
 ```
 
-## [ES Modules]()
+## ES6 Modules
 
 ES modules are the standard for modularization in modern JavaScript and TypeScript. They allow you to split your code into separate files and import/export functionalities as needed. This approach promotes better code organization, reusability, and maintainability.
 
