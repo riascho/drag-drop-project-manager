@@ -12,7 +12,7 @@ Is a Union Type. Decided not to use enum because there's no functionality for th
 
 Used for functions passed to the listeners collection in the state manager to be called by the state manager in an event. Could also use type `(items: Project[]) => void` when we need to be more restrictive to make sure these functions always contain parameters
 
-## Interfaces
+## 2. Interfaces
 
 Using interfaces when we want to add specific types and structures to certain classes or objects to implement certain methods.
 
@@ -31,7 +31,7 @@ Interface for classes that implement drop target functionality (e.g. ProjectList
 - `dropHandler(event: DragEvent)` - handle the drop
 - `dragLeaveHandler(event: DragEvent)` - visual feedback after drop or abort
 
-## Methods / Functions
+## 3. Methods / Functions
 
 ### Autobind Decorator
 
@@ -46,7 +46,7 @@ Use as decorator function to bind methods to their class instance instead of the
 This function performs a variety of validation checks on input.
 It uses a variable `isValid` that is always true unless the following validation checks turn it `false`. It is returned at the end and therefore, if any one check fails, the whole input validation failed.
 
-## Classes
+## 4. Classes
 
 ### StateManagement
 
@@ -115,7 +115,7 @@ Implements the `Draggable` class, so that the we're forced to implement the `Dra
 
 The types `HTMLUListElement` (from `T` in base class) corresponds to the element where our project items will be placed in and `HTMLLIElement` (from `U` in the base class) is the item we want to place in `T`.
 
-## Global Instances
+## 5. Global Instances
 
 `stateManager` is a global instance (`Singleton`) that can be used to interact between classes
 
