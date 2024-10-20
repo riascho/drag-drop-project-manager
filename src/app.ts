@@ -4,5 +4,3 @@ import { ProjectList } from "./classes/project-list";
 new ProjectInput();
 new ProjectList("active");
 new ProjectList("finished");
-
-console.log("hi ria!");
