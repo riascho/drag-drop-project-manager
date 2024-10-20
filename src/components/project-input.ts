@@ -1,6 +1,6 @@
 import { Component } from "./base.js";
 import { stateManager } from "./state-manager.js";
-import { Autobind } from "../utils/autobind.js";
+import Autobind from "../utils/autobind.js";
 import { Validatable, validate } from "../utils/validation.js";
 
 export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {

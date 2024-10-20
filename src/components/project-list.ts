@@ -3,7 +3,7 @@ import { stateManager } from "./state-manager.js";
 import { ProjectItem } from "./project-item.js";
 import { DragTarget } from "../models/drag-and-drop.js";
 import { Project, ProjectStatus } from "../models/project.js";
-import { Autobind } from "../utils/autobind.js";
+import Autobind from "../utils/autobind.js";
 
 export class ProjectList
   extends Component<HTMLDivElement, HTMLElement>
