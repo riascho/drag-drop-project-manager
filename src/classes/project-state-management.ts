@@ -1,5 +1,5 @@
-import { StateManagement } from "./state-management.js";
-import { Project, ProjectStatus } from "./project.js";
+import { StateManagement } from "./state-management";
+import { Project, ProjectStatus } from "./project";
 
 export class ProjectStateManagement extends StateManagement {
   private constructor() {

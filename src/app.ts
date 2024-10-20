@@ -1,6 +1,8 @@
-import { ProjectInput } from "./classes/project-input.js";
-import { ProjectList } from "./classes/project-list.js";
+import { ProjectInput } from "./classes/project-input";
+import { ProjectList } from "./classes/project-list";
 
 new ProjectInput();
 new ProjectList("active");
 new ProjectList("finished");
+
+console.log("hi ria!");
